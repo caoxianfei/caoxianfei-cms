@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caoxianfei.cms.dao.ArticleMapper">
+
+		<insert id="add">
+         insert into cms_article  values(0,#{title},#{summary},#{content},#{picture},#{channelId},#{categoryId},#{userId},#{hits},#{hot},#{status},#{deleted},#{contentType},#{created},#{created})
+    </insert>
+    
+    
+    <select id="getMyArticleList" resultType="Article">
+     	SELECT *  FROM   cms_article WHERE user_id = #{uid} order by created desc
+    </select>
+    
+    <select id="getArticleById" resultType="Article">
+      SELECT *  FROM   cms_article WHERE id = #{id}
+    </select>
+    
+   <resultMap type="Article" id="articleMap">
+      <id property="id"  column="id" />
+    	<result column="title" property="title" />
+		<result column="content" property="content" />
+		<result column="picture" property="picture" />
+		<result column="channel_id" property="channelId" />
+		<result column="category_id" property="categoryId" />
+		<result column="user_Id" property="userId" />
+		<result column="hits" property="hits" />
+		<result column="status" property="status" />
+		<result column="deleted" property="deleted" />
+		<result column="created" property="created" />
+		<result column="updated" property="updated" />
+		<result column="hot" property="hot" />
+		<result column="content_Type" property="contentType" />
+		<result column="keywords" property="keywords" />
+		<result column="original" property="original" />
+		  <!-- 文章对应得菜单 -->
+		 <association property="channel" javaType="Channel" select="getChannelById" column="channel_id"></association>
+		  <!-- 文章对应的分类 -->
+		 <association property="category" javaType="Category" select="getCategoryById" column="category_id"></association>
+		 
+		   <!-- 文章对应的用户 -->
+		 <association property="user" javaType="User" select="getUserById" column="user_id"></association>
+		
+   
+   </resultMap>
+ 
+ 
+  <select id="getArticleList" resultMap="articleMap">
+       select  *  from   cms_article
+        <where>
+          <if test="title !=null and title !=''">
+            title like concat('%',#{title},'%')
+          </if>
+          <if test="status !=null and status !=2">
+               and  status = #{status}
+          </if>
+        </where>
+        order by created desc
+  </select>
+  <select id="getChannelById" resultType="Channel">
+    select  *  from  cms_channel  where id=#{channel_id}
+   </select>
+   <select id="getCategoryById" resultType="Category">
+    select  *  from  cms_category  where id=#{category_id}
+   </select>
+   <select id="getUserById" resultType="User">
+    select  * from  cms_user where id =#{user_id}
+   </select>
+   
+
+   
+   <update id="update">
+     update cms_article 
+     <set>
+       <if test="status !=null">
+          status =#{status}
+       </if>
+       <if test="hot !=null">
+          hot = #{hot}
+       </if>
+     </set>
+     <where>
+        <if test="id !=null">
+           id=#{id}
+        </if>
+     </where>
+   </update>
+   
+   
+   <select id="getByChannelIdAndCategoryId" resultMap="articleMap">
+      select  *  from  cms_article
+      <where>
+           <if test="channelId !=null">
+             channel_id = #{channelId} 
+           </if>
+           <if test="categoryId !=null">
+             and category_id = #{categoryId}
+           </if>
+      </where>
+     
+   </select>
+   
+    <select id="getHotList" resultMap="articleMap">
+        select  *  from  cms_article where hot=1  and  status =1 and deleted=0
+     </select>
+   
+   
+    <select id="getLastArticles" resultType="Article">
+     SELECT  *  FROM   cms_article where   status =1  and deleted=0 order by created desc limit 5
+    </select>
+   
+</mapper>

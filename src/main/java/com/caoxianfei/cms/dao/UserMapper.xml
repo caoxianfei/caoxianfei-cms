@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caoxianfei.cms.dao.UserMapper">
+		
+		
+    <sql id="userSelct">
+       id,username,password,nickname,role,birthday,gender,locked,created,updated
+    </sql>
+    
+    
+    <insert id="addUser">
+       insert into  cms_user values(0,#{username},#{password},#{nickname},#{role},#{birthday},#{gender},#{locked},now(),now())
+    </insert> 
+  
+  
+   
+   <select id="login" resultType="User" parameterType="User" >
+     select <include refid="userSelct"></include> from  cms_user where username=#{username} and password=#{password} and locked = 0;
+   </select>
+  
+  
+  <select id="selectByUserId" resultType="User">
+    SELECT *  FROM cms_user where id =#{id}
+  </select>
+  
+  
+   <select id="getUserList" resultType="User">
+     select *  from  cms_user
+      <where>
+          <if test="username !=null and username !=''">
+            username like concat('%',#{username},'%')
+          </if>
+          <if test="locked !=null">
+             and locked = #{locked} 
+          </if>
+      </where>
+     
+   </select>
+   
+   
+     <update id="updateLocked">
+       update cms_user set locked=#{locked} where id=#{id}
+     </update>
+		
+		
+		 <insert id="reg">
+         insert into cms_user set username=#{username},password=#{password},nickname=#{nickname},
+         role=0,birthday=#{birthday},gender=#{gender},locked=0,created=now(),
+         updated=now()
+       </insert>
+       
+       
+       <select id="getCountByUsername" resultType="int">
+         select  count(1)  from  cms_user where username=#{username}
+       </select>
+</mapper>
