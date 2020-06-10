@@ -6,9 +6,11 @@ package com.caoxianfei.cms.service;
 import java.util.List;
 
 
+
 import org.apache.ibatis.annotations.Param;
 
 import com.caoxianfei.cms.domain.User;
+import com.caoxianfei.cms.vo.UserVO;
 import com.github.pagehelper.PageInfo;
 
 /**
@@ -19,19 +21,29 @@ import com.github.pagehelper.PageInfo;
  */
 public interface UserService {
 
-	int addUser(User u);
+
+	/**
+	 * 
+	 * @Title: selects 
+	 * @Description: TODO
+	 * @param userVO
+	 * @return
+	 * @return: List<User>
+	 */
+	PageInfo<User> selects(UserVO userVO,Integer pageNum,Integer pageSize);
+	/**
+	 * 
+	 * @Title: update 
+	 * @Description: 修改用户
+	 * @param user
+	 * @return
+	 * @return: int
+	 */
+	int update(User user);
 	
+	int insert(User user);
 	
-	 
-	 User login(User u);
-
-
-
-	PageInfo<User> getUserList(User user, Integer pageNum);
-
-	Boolean updateLocked(User user);
-
-	Boolean reg(User u);
+	User selectByName(String name);
 	
-	int getCountByUsername(String username);
+	User loginto(User user);
 }

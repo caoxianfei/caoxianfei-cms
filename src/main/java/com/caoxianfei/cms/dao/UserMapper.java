@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 
 import com.caoxianfei.cms.domain.User;
+import com.caoxianfei.cms.vo.UserVO;
 
 /**
  * @author (caoxianfei) email:(948315767@qq.com)
@@ -20,16 +21,40 @@ import com.caoxianfei.cms.domain.User;
 
 public interface UserMapper {
 
+	/**
+	 * 
+	 * @Title: selects 
+	 * @Description: TODO
+	 * @param userVO
+	 * @return
+	 * @return: List<User>
+	 */
+	List<User> selects(UserVO userVO);
+	/**
+	 * 
+	 * @Title: update 
+	 * @Description: 修改用户
+	 * @param user
+	 * @return
+	 * @return: int
+	 */
+	int update(User user);
+	
+	/**
+	 * 
+	 *	 功能:  插入对象  并且 验证数据正确性
+	 *	@return :
+	 *
+	 */
+	int insert(User user);
+	/**
+	 * 
+	 *	 功能: 注册用户 注册前验证是否为已注册用户
+	 *	@return :
+	 *
+	 */
+	User selectByName(String name);
+	
 
-	 int addUser(User u);
 	 
-	 List<User> getUserList(User user);
-	 
-	 User login(User u);
-
-	 Boolean updateLocked(User user);
-	 
-	 Boolean reg(User u);
-
-	 int getCountByUsername(String username);
 }

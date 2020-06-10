@@ -1,80 +1,126 @@
+/**
+ * 
+ */
 package com.caoxianfei.cms.controller;
 
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.caoxianfei.cms.domain.Article;
 import com.caoxianfei.cms.domain.Category;
 import com.caoxianfei.cms.domain.Channel;
+import com.caoxianfei.cms.domain.Comments;
 import com.caoxianfei.cms.domain.Slide;
+import com.caoxianfei.cms.domain.User;
 import com.caoxianfei.cms.service.ArticleService;
 import com.caoxianfei.cms.service.ChannelService;
+import com.caoxianfei.cms.service.CommentsService;
 import com.caoxianfei.cms.service.SlideService;
-import com.github.pagehelper.Page;
+import com.caoxianfei.cms.util.CMSResult;
+import com.caoxianfei.utils.DateUtil;
 import com.github.pagehelper.PageInfo;
+
+/**
+ * @author (caoxianfei) email:(948315767@qq.com)
+ * @version v1.0
+ * @date 
+ *	  创建于:2020年6月4日上午10:28:30
+ */
 
 @Controller
 public class IndexController {
-	
+
 	@Autowired
 	private ChannelService channelService;
 	
 	@Autowired
-	private ArticleService articleService;
-	
-	@Autowired
 	private SlideService slideService;
 	
-	@RequestMapping("/index.do")
-	public String index(Model model,Integer channelId,Integer categoryId,@RequestParam(defaultValue="1")Integer pageNum,HttpServletRequest request) {
-		//查询菜单 
-				List<Channel>  list = channelService.getChannelList();
-				model.addAttribute("channels", list);
-				//通过菜单id查询分类
-				List<Category> categorys = channelService.getCategoryList(channelId);
-				model.addAttribute("categorys", categorys);
-				
-				//通过菜单id和分类id查询出所有文章
-				     PageInfo<Article> info   =  new PageInfo<Article>();
-					  if(channelId !=null) {
-						  info =  articleService.getByChannelIdAndCategoryId(channelId,categoryId,pageNum);
-					  }
-				  
-					if(channelId == null) {//查询广告列表 及热点文章	
-						List<Slide>  slides = slideService.getList();
-						model.addAttribute("slides", slides);
-						//查询热点文章
-						info=articleService.getHotList(pageNum);
-					}	
-			
-					//查询最近的5篇文章用于右侧显示
-					List<Article>  lasts = articleService.getLastArticles();
-					model.addAttribute("lasts", lasts);
-						
+	@Autowired
+	private CommentsService commentsService;
+	
+	@Autowired
+	private ArticleService articleService;
+	
+	@RequestMapping(value = {"","/","index"})
+	public String index(Model model,Article article,@RequestParam(defaultValue = "1")Integer pageNum,@RequestParam(defaultValue = "3")Integer pageSize) {
+		article.setStatus(1);
+		model.addAttribute("article", article);
+		List<Channel> channels = channelService.Channels();
+		model.addAttribute("channels", channels);
+		
+		//2如果栏目id不为空，则根据栏目查询分类
+				if(article.getChannelId()!=null) {
+					//2.1查询栏目下分类
+					List<Category> categorys = channelService.getCategoryList(article.getChannelId());
+					model.addAttribute("categorys", categorys);
+					//2.1查询栏目下的文章
+					PageInfo<Article> info = articleService.selects(article, pageNum, pageSize);
 					model.addAttribute("info", info);
-					model.addAttribute("channelId", channelId);
-					model.addAttribute("categoryId", categoryId);
+				}
+				//3 .如果未点栏目或者点击的是热点栏目，则显示热点文章
+				if(article.getChannelId()==null) {
+					//3.1查询热点文章
+					article.setHot(1);//热点文章
+					PageInfo<Article> info = articleService.selects(article, pageNum, pageSize);
+					model.addAttribute("info", info);
+					//3.2查询广告
+					List<Slide> slides = slideService.getList();
+					model.addAttribute("slides", slides);
+				}
 				
-				//拦截器要跳转的地址
-				model.addAttribute("url", request.getAttribute("url"));
+				//4 24小时热文  -只显示4条
+				//4.1获取昨日的日期
+				Date startDate = DateUtil.addDays(-1, new Date());
+				article.setCreated(startDate);
+				//4.2 设置热点文章
+				article.setHot(1);
+				PageInfo<Article> hot24Articles = articleService.selects(article, 1, 4);
+				model.addAttribute("hot24Articles", hot24Articles);
 				
-				return "index/index";
+		return "index/index";
 	}
 	
-	@RequestMapping("/detail.do")
-	public String detail(Integer id,Model model) {
-		Article article = articleService.getArticleById(id);
+	
+	@RequestMapping("detail")
+	public String detail(Model model,Integer id) {
+		Article article = articleService.select(id);
 		model.addAttribute("article", article);
-		return "index/article";
+		PageInfo<Comments> info = commentsService.selectByIdList(id);
+		model.addAttribute("info", info);
+		return "index/article";    //使查询到的文章 跳转另一个页面显示
 		
 	}
 
+	
+	@ResponseBody
+	@RequestMapping("insert")
+	public CMSResult<Comments> insert (Comments comments,HttpSession session) {
+		CMSResult<Comments> result = new CMSResult<Comments>();
+		
+		User user = (User)session.getAttribute("user");
+		if(null==user) {
+			result.setCode(500);
+			result.setMsg("请登录后再评论");
+			return result;
+		}
+		comments.setUserId(user.getId());
+		comments.setCreated(new Date());
+		commentsService.insert(comments);
+		result.setCode(200);
+		result.setMsg("评论成功!");
+	return result;
+	}
+	
 }

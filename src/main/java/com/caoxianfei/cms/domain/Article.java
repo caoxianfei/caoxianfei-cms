@@ -3,12 +3,16 @@ package com.caoxianfei.cms.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.jboss.logging.FormatWith;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.test.annotation.Timed;
+
 /**
  * 
  * @ClassName: Article 
  * @Description: 文章内容表
  * @author: caoxianfei
- * @date: 2020年4月27日 上午11:25:22
+ * @date: 2020年5月28日 上午11:25:22
  */
 public class Article implements Serializable {
 
@@ -30,40 +34,22 @@ public class Article implements Serializable {
 	private Integer hot;//是否热门文章   1：热门     , 0 ：一般文章
 	private Integer status;//文章审核状态     0：待审        1：审核通过     -1: 审核未通过
 	private Integer deleted;// 删除状态 0:正常，1：逻辑删除
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date created;// 文章发布时间
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private  Date  updated;// 文章修改时间
+	private String displayDate;  //人性化时间
 	
 	private Integer contentType ;//文章内容类型  0:html  1:json
 	private Channel channel;
 	private Category category;
 	private User user;
 	
-	private Integer commentNum;//评论数量
+	private Integer comments;//评论数量
 	
 	
 	private String keywords;//文章关键词
 	private String original;//文章来源
-	
-	
-	public Integer getCommentNum() {
-		return commentNum;
-	}
-	public void setCommentNum(Integer commentNum) {
-		this.commentNum = commentNum;
-	}
-	public String getKeywords() {
-		return keywords;
-	}
-	public void setKeywords(String keywords) {
-		this.keywords = keywords;
-	}
-	public String getOriginal() {
-		return original;
-	}
-	public void setOriginal(String original) {
-		this.original = original;
-	}
-	
 	public Integer getId() {
 		return id;
 	}
@@ -106,10 +92,6 @@ public class Article implements Serializable {
 	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
-	
-	
-	
-	
 	public Integer getUserId() {
 		return userId;
 	}
@@ -152,6 +134,18 @@ public class Article implements Serializable {
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
+	public String getDisplayDate() {
+		return displayDate;
+	}
+	public void setDisplayDate(String displayDate) {
+		this.displayDate = displayDate;
+	}
+	public Integer getContentType() {
+		return contentType;
+	}
+	public void setContentType(Integer contentType) {
+		this.contentType = contentType;
+	}
 	public Channel getChannel() {
 		return channel;
 	}
@@ -170,25 +164,40 @@ public class Article implements Serializable {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public Integer getContentType() {
-		return contentType;
+	public Integer getComments() {
+		return comments;
 	}
-	public void setContentType(Integer contentType) {
-		this.contentType = contentType;
+	public void setComments(Integer comments) {
+		this.comments = comments;
 	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	public String getKeywords() {
+		return keywords;
+	}
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+	public String getOriginal() {
+		return original;
+	}
+	public void setOriginal(String original) {
+		this.original = original;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	public Article() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public String toString() {
 		return "Article [id=" + id + ", title=" + title + ", summary=" + summary + ", content=" + content + ", picture="
 				+ picture + ", channelId=" + channelId + ", categoryId=" + categoryId + ", userId=" + userId + ", hits="
 				+ hits + ", hot=" + hot + ", status=" + status + ", deleted=" + deleted + ", created=" + created
-				+ ", updated=" + updated + ", contentType=" + contentType + ", channel=" + channel + ", category="
-				+ category + ", user=" + user + ", commentNum=" + commentNum + ", keywords=" + keywords + ", original="
-				+ original + "]";
+				+ ", updated=" + updated + ", displayDate=" + displayDate + ", contentType=" + contentType
+				+ ", channel=" + channel + ", category=" + category + ", user=" + user + ", comments=" + comments
+				+ ", keywords=" + keywords + ", original=" + original + "]";
 	}
-
 	
 	
 	

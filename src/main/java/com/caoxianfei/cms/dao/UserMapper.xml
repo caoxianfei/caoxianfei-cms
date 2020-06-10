@@ -5,7 +5,84 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.caoxianfei.cms.dao.UserMapper">
 		
 		
-    <sql id="userSelct">
+		<select id="selects" resultType="User">
+		select * from cms_user
+		<where>
+			<if test="username!=null and username!=''">
+				username like "%"#{username}"%"
+
+			</if>
+			<if test="locked!=null">
+				and locked = #{locked}
+			</if>
+			<if test="createdStart!=null and createdStart!=''">
+				and created >= #{createdStart}
+
+			</if>
+			<if test="createdEnd!=null and createdEnd!=''">
+				and created &lt;= #{createdEnd}
+
+			</if>
+
+		</where>
+
+		order by created desc
+
+	</select>
+
+	<update id="update">
+
+		update cms_user
+		<trim prefix="set" suffix="where id =#{id}" suffixOverrides=",">
+			<if test="username!=null and username!=''">
+				username =#{usename},
+
+			</if>
+
+			<if test="password!=null and password!=''">
+				password =#{password},
+
+			</if>
+			<if test="nickname!=null and nickname!=''">
+				nickname =#{nickname},
+
+			</if>
+
+			<if test="locked!=null">
+				locked =#{locked},
+
+			</if>
+		</trim>
+
+	</update>
+		
+		
+		
+	<insert id="insert">
+			insert into cms_user(username,password,gender,created,updated) values (#{username},#{password},#{gender},#{created},#{updated})
+	</insert>
+		
+		
+		
+		<select id="selectByName" resultType="User">
+				select * from cms_user where username = #{username}
+		</select>
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+  <!--   <sql id="userSelct">
        id,username,password,nickname,role,birthday,gender,locked,created,updated
     </sql>
     
@@ -54,5 +131,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        
        <select id="getCountByUsername" resultType="int">
          select  count(1)  from  cms_user where username=#{username}
-       </select>
+       </select> -->
 </mapper>

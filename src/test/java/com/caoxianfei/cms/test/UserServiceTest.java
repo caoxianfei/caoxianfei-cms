@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.caoxianfei.cms.dao.UserMapper;
 import com.caoxianfei.cms.domain.Gender;
 import com.caoxianfei.cms.domain.User;
+import com.caoxianfei.cms.service.ArticleService;
 import com.caoxianfei.cms.service.UserService;
 
 /**
@@ -33,28 +34,11 @@ public class UserServiceTest {
 	  @Autowired 
 	  private UserService userService;
 	 
+	  @Autowired
+	  private ArticleService articleService;
 	
 
-		@Test
-		public void addUser() {
-			User user = new User();
-			user.setBirthday(new Date());
-			user.setGender(Gender.FAMALE);	
-			user.setLocked(true);
-			user.setNickname("吕续涛");
-			user.setPassword("123456");
-			user.setUsername("system");
-			user.setRole(1);
-			userService.addUser(user);
-		}
-		
-		@Test
-		public void lgoin() {
-			User user = new User();
-			user.setUsername("system");
-			user.setPassword("123456");
-			User u = userService.login(user);
-			System.out.println(u );
-		}
+	
+	
 	
 }

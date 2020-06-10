@@ -16,19 +16,11 @@ import com.github.pagehelper.PageInfo;
  */
 public interface ArticleService {
 
-	boolean add(Article article);
+	PageInfo<Article> selects(Article article,Integer pageNum,Integer pageSize);
 	
-	PageInfo<Article> getMyArticleList(int pageNum, int uid);
-
-	Article getArticleById(Integer articleId);
-
-	PageInfo<Article> getArticleList(Article article, Integer pageNum);
-
-	Boolean update(Article article);
-
-	PageInfo<Article> getByChannelIdAndCategoryId(Integer channelId, Integer categoryId, Integer pageNum);
+	Article select(Integer id); 
 	
-	PageInfo<Article> getHotList(Integer pageNum);
-
-	List<Article> getLastArticles();
+	int insert (Article article); //发布文章
+	
+	int update(Article article);
 }

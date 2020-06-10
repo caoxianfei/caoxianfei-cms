@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caoxianfei.cms.dao.CommentsMapper">
+
+		<insert id="insert">
+				insert into cms_comment values(0,#{userId},#{articleId},#{content},#{created})
+		</insert>
+		
+		
+		<resultMap type="Comments" id="sMap">
+				<id column="id" property="id"/>
+				<result column="user_id" property="userId"/>
+				<result column="article_id" property="articleId"/>
+				<result column="content" property="content"/>
+				<result column="created" property="created"/>
+				<association property="user" column="user_id" select="selectUser"></association>
+		
+		</resultMap>
+		
+		<select id="selectByIdList" resultMap="sMap">
+				select * from cms_comment where article_id = #{id} order by created desc
+		</select>
+
+		<select id="selectUser" resultType="User">
+				select * from cms_user where id = #{userId}
+		</select>
+
+		<update id="comments">
+				update cms_article set comments = comments + 1  where id = #{id}
+		</update>
+</mapper>

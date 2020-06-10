@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 /**
  * 
- * @ClassName: Comment 
- * @Description: 评论表
- * @author: caoxianfei
- * @date: 2020年4月27日  上午11:32:22
+ * @author (caoxianfei) email:(948315767@qq.com)
+ * @version v1.0
+ * @date 
+ *	  创建于:2020年6月8日下午8:09:29
  */
-public class Comment implements Serializable {
+public class Comments implements Serializable {
 
 	/**
 	 * @fieldName: serialVersionUID
@@ -24,6 +24,24 @@ public class Comment implements Serializable {
 	private String content;
 	private Date created;
 	
+	private String displaytime;
+	
+	@Override
+	public String toString() {
+		return "Comments [id=" + id + ", userId=" + userId + ", articleId=" + articleId + ", content=" + content
+				+ ", created=" + created + ", displaytime=" + displaytime + ", user=" + user + ", article=" + article
+				+ "]";
+	}
+	public Comments() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public String getDisplaytime() {
+		return displaytime;
+	}
+	public void setDisplaytime(String displaytime) {
+		this.displaytime = displaytime;
+	}
 	private  User user;
 	private Article article;
 	public Integer getId() {

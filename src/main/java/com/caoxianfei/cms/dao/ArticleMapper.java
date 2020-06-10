@@ -16,24 +16,18 @@ import com.caoxianfei.cms.domain.Article;
  *	  创建于:2020年4月29日下午7:20:07
  */
 public interface ArticleMapper {
+		
+		/**
+		 * 
+		 *	 功能: 文章模糊查询
+		 *	@return :   List<Article>
+		 *
+		 */
+		List<Article> selects(Article article);   //查询多个文章
+		
+		Article select(Integer id);   // 回显 单个文章内容
 
-	boolean add(Article article);
+		int insert (Article article); //发布文章
 	
-	List<Article> getMyArticleList(int uid);
-
-	Article getArticleById(Integer articleId);
-
-
-	List<Article> getArticleList(Article article);
-
-	Boolean update(Article article);
-
-	List<Article> getByChannelIdAndCategoryId(@Param("channelId")Integer channelId, @Param("categoryId")Integer categoryId);
-	
-	List<Article> getHotList();
-
-	List<Article> getLastArticles();
-
-
-	
+		int update(Article article);
 }

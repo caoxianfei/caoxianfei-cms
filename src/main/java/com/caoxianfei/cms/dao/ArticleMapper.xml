@@ -4,8 +4,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.caoxianfei.cms.dao.ArticleMapper">
 
-		<insert id="add">
-         insert into cms_article  values(0,#{title},#{summary},#{content},#{picture},#{channelId},#{categoryId},#{userId},#{hits},#{hot},#{status},#{deleted},#{contentType},#{created},#{created})
+	<!-- 	<insert id="add">
+         insert into cms_article  values(0,#{title},#{summary},#{content},#{picture},#{channelId},#{categoryId},#{userId},#{hits},#{hot},#{status},#{deleted},#{contentType},#{created},#{created},#{wechat})
     </insert>
     
     
@@ -15,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="getArticleById" resultType="Article">
       SELECT *  FROM   cms_article WHERE id = #{id}
-    </select>
+    </select> -->
     
    <resultMap type="Article" id="articleMap">
       <id property="id"  column="id" />
@@ -24,14 +24,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result column="picture" property="picture" />
 		<result column="channel_id" property="channelId" />
 		<result column="category_id" property="categoryId" />
-		<result column="user_Id" property="userId" />
+		<result column="user_id" property="userId" />
 		<result column="hits" property="hits" />
 		<result column="status" property="status" />
 		<result column="deleted" property="deleted" />
 		<result column="created" property="created" />
 		<result column="updated" property="updated" />
 		<result column="hot" property="hot" />
-		<result column="content_Type" property="contentType" />
+		<result column="content_type" property="contentType" />
+		<result column="comments" property="comments"/>
 		<result column="keywords" property="keywords" />
 		<result column="original" property="original" />
 		  <!-- 文章对应得菜单 -->
@@ -45,31 +46,112 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
    </resultMap>
  
+ <select id="select" resultMap="articleMap">
+   		select * from cms_article where id = #{id}
+   </select>
  
-  <select id="getArticleList" resultMap="articleMap">
+  <select id="selects" resultMap="articleMap">
        select  *  from   cms_article
         <where>
-          <if test="title !=null and title !=''">
-            title like concat('%',#{title},'%')
-          </if>
-          <if test="status !=null and status !=2">
-               and  status = #{status}
-          </if>
-        </where>
+			<!--按照栏目查询 -->
+			<if test="channelId!=null">
+				channel_id =#{channelId}
+			</if>
+			<!-- 按分类查询 -->
+			<if test="categoryId!=null">
+				and category_Id =#{categoryId}
+			</if>
+			<!-- 按用户查询 -->
+			<if test="userId!=null">
+				and user_Id =#{userId}
+			</if>
+			<!-- 按文章标题查询 -->
+			<if test="title!=null and title!=''">
+				and title like "%"#{title}"%"
+			</if>
+			<!-- 按文章状态查询 -->
+			<if test="status!=null">
+				and status =#{status}
+			</if>
+			<!-- 按热点文章查询 -->
+			<if test="hot!=null">
+				and hot =#{hot}
+			</if>
+			<if test="created!=null">
+			 and created between #{created} and now()
+			</if>
+
+		</where>
         order by created desc
   </select>
   <select id="getChannelById" resultType="Channel">
-    select  *  from  cms_channel  where id=#{channel_id}
+    select  *  from  cms_channel  where id=#{channelId}
    </select>
    <select id="getCategoryById" resultType="Category">
-    select  *  from  cms_category  where id=#{category_id}
+    select  *  from  cms_category  where id=#{categoryId}
    </select>
    <select id="getUserById" resultType="User">
-    select  * from  cms_user where id =#{user_id}
+    select  * from  cms_user where id =#{userId}
    </select>
    
-
    
+   <insert id="insert">
+   		insert into cms_article values (#{id},#{title},#{summary},#{content},#{picture},#{channelId},#{categoryId},#{userId},#{hits},#{hot},#{status},#{deleted},#{contentType},#{created},#{updated},#{comments})
+   </insert>
+   
+
+	<update id="update">
+		update cms_article
+		<trim prefix="set" suffix="where id=#{id}" suffixOverrides=",">
+			<if test="title!=null and title!=''">
+				title=#{title},
+			</if>
+			<if test="summary!=null and summary!=''">
+				summary=#{summary},
+			</if>
+			<if test="content!=null and content!=''">
+				content=#{content},
+			</if>
+			<if test="picture!=null and picture!=''">
+				picture=#{picture},
+			</if>
+			<if test="channelId!=null">
+				channel_Id=#{channelId},
+			</if>
+			<if test="categoryId!=null">
+				category_Id=#{categoryId},
+			</if>
+
+			<if test="userId!=null ">
+				user_Id=#{userId},
+			</if>
+			<if test="hits!=null">
+				hits=#{hits},
+			</if>
+			<if test="deleted!=null">
+				deleted=#{deleted},
+			</if>
+
+			<if test="hot!=null">
+				hot=#{hot},
+			</if>
+			<if test="status!=null">
+				status= #{status},
+			</if>
+			<if test="created!=null">
+				created=#{created},
+			</if>
+			<if test="updated!=null">
+				updated=#{updated},
+			</if>
+			<if test="contentType!=null">
+				content_Type=#{contentType},
+			</if>
+		</trim>
+	</update>
+
+
+  <!--  
    <update id="update">
      update cms_article 
      <set>
@@ -108,6 +190,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    
     <select id="getLastArticles" resultType="Article">
      SELECT  *  FROM   cms_article where   status =1  and deleted=0 order by created desc limit 5
-    </select>
+    </select> -->
    
 </mapper>

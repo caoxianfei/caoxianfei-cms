@@ -19,9 +19,9 @@ import com.caoxianfei.cms.domain.Channel;
 public interface ChannelMapper {
 
 
-	List<Channel> getChannelList();
+	List<Channel> Channels();
 
-	List<Category> getCategoryList(@Param("channelId")Integer channelId);
+	List<Category> getCategoryList(Integer channelId);
 
 	
 }
