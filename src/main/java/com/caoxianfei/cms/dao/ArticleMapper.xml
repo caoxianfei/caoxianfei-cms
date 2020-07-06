@@ -95,7 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    </select>
    
    
-   <insert id="insert">
+   <insert id="insert" useGeneratedKeys="true"  keyProperty="id" keyColumn="id">
    		insert into cms_article values (#{id},#{title},#{summary},#{content},#{picture},#{channelId},#{categoryId},#{userId},#{hits},#{hot},#{status},#{deleted},#{contentType},#{created},#{updated},#{comments})
    </insert>
    
@@ -149,6 +149,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 		</trim>
 	</update>
+
+
+		<select id="getById" resultMap="articleMap">
+		select * from cms_article where id=#{id}
+	</select>
 
 
   <!--  

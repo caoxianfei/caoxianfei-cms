@@ -30,4 +30,6 @@ public interface ArticleMapper {
 		int insert (Article article); //发布文章
 	
 		int update(Article article);
+		//根据id获取对象
+		Article getById(Integer id);
 }

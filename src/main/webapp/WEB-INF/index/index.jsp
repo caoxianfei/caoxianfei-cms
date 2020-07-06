@@ -201,6 +201,24 @@
 			</div>
 			<!-- 右侧	 -->
 			<div class="col-md-3">
+			
+			<form action="/">
+					<!--  搜索框 -->
+					<div class="card"
+						style="width: 18rem; margin-bottom: 5px; border: 0px">
+						<div class="form-inline">
+							<input type="text" placeholder="请输入要搜索的内容" class="form-control"
+								style="width: 14rem; margin-right: 5px" name="key" value=${key }>
+							<!-- <button class="btn btn-info" type="button">搜索</button> -->
+							<input type="submit" value="搜索"  class="btn btn-info">
+						</div>
+	
+					</div>
+				</form>
+			
+			
+			
+			
 			<div class="card" style="width: 18rem;">
 	<div class="card-header title-box">24小时热文</div>
 	<div class="card-body">
@@ -225,7 +243,25 @@
 	</div>
 </div>
 			
-			
+			<!-- 最新文章 -->
+				<div class="card" style="width: 18rem;">
+					<div class="card-header" style="text-align: center;">最新文章</div>
+					<div class="card-body">
+						<c:forEach items="${lastInfo.list}" var="lastArticle">
+							<ul class="list-unstyled">
+								<li class="media"><img src="${lastArticle.picture }"
+									class="mr-3" alt="..." width="60" height="60">
+									<div class="media-body">
+										<p style="font-size: 14px">
+											<a href="/articleDetail?id=${lastArticle.id}"
+												target="_blank">${lastArticle.title }</a>
+										</p>
+									</div></li>
+							</ul>
+							<hr>
+						</c:forEach>
+					</div>
+				</div>
 			
 			
 			</div>
@@ -240,7 +276,8 @@
 function goPage(pageNum) {
 	var channelId = '${article.channelId}';
 	var categoryId = '${article.categoryId}';
-	var url = "/?pageNum=" + pageNum;
+	var key = '${key}';
+	var url = "/?pageNum=" + pageNum + "&key=" + key;
 	if (channelId != "")
 		url += "&channelId=" + channelId;
 	if (categoryId != "")

@@ -23,4 +23,27 @@ public interface ArticleService {
 	int insert (Article article); //发布文章
 	
 	int update(Article article);
+
+	/**
+	 *	 功能: 从es 中 高亮查询
+	 *	@return :
+	 *  
+	 */
+	PageInfo<Article> selectFromES(Integer pageNum, Integer pageSize, String key);
+
+	/**
+	 *	 功能:  查询最新文章
+	 *	@return :
+	 *  
+	 */
+	PageInfo<Article> selectLast(Article article,Integer pageNum,Integer pageSize);
+
+	/**
+	 *	 功能: 查询热点文章
+	 *	@return :
+	 *  
+	 */
+	PageInfo<Article> selectHot(Article article, Integer pageNum, Integer pageSize);
+	
+	
 }

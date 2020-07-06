@@ -54,7 +54,8 @@ public class IndexController {
 	private ArticleService articleService;
 	
 	@RequestMapping(value = {"","/","index"})
-	public String index(Model model,Article article,@RequestParam(defaultValue = "1")Integer pageNum,@RequestParam(defaultValue = "3")Integer pageSize) {
+	public String index(Model model,Article article,@RequestParam(defaultValue = "1")Integer pageNum
+			,@RequestParam(defaultValue = "3")Integer pageSize,String key) {
 		article.setStatus(1);
 		model.addAttribute("article", article);
 		List<Channel> channels = channelService.Channels();
@@ -69,12 +70,30 @@ public class IndexController {
 					PageInfo<Article> info = articleService.selects(article, pageNum, pageSize);
 					model.addAttribute("info", info);
 				}
+				
 				//3 .如果未点栏目或者点击的是热点栏目，则显示热点文章
 				if(article.getChannelId()==null) {
-					//3.1查询热点文章
-					article.setHot(1);//热点文章
-					PageInfo<Article> info = articleService.selects(article, pageNum, pageSize);
-					model.addAttribute("info", info);
+			if (key == null || "".equals(key.trim())) {
+
+//				// 3.1查询热点文章    修改前代码
+//				article.setHot(1);// 热点文章
+//				PageInfo<Article> page = articleService.selects(article, pageNum, pageSize);
+//				model.addAttribute("info", page);
+				
+				//3.1查询热点文章
+				article.setHot(1);//热点文章
+				PageInfo<Article> page = articleService.selectHot(article, pageNum, pageSize);
+				model.addAttribute("info", page);
+			} else {
+
+				// 从es中查询数据
+				PageInfo<Article> page = articleService.selectFromES(pageNum, pageSize, key);
+				model.addAttribute("info", page);
+
+				model.addAttribute("key", key);
+			}
+					
+
 					//3.2查询广告
 					List<Slide> slides = slideService.getList();
 					model.addAttribute("slides", slides);
@@ -88,6 +107,13 @@ public class IndexController {
 				article.setHot(1);
 				PageInfo<Article> hot24Articles = articleService.selects(article, 1, 4);
 				model.addAttribute("hot24Articles", hot24Articles);
+				
+				//审核后的条件
+				Article last = new Article();
+				last.setStatus(1);
+				//查询最新的5条数据
+				PageInfo<Article> lastInfo = articleService.selectLast(last, 1, 5);	
+				model.addAttribute("lastInfo", lastInfo);
 				
 		return "index/index";
 	}
