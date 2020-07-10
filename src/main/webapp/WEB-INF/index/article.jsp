@@ -34,7 +34,7 @@
 	      <div class="col-md-2"></div>
 	      <div class="col-md-7">
 	         <h2><strong> ${article.title }</strong></h2>
-	         <p>${article.user.username } · <fmt:formatDate value="${article.created}" pattern="yyyy-MM-dd HH:mm:ss"/> </p>
+	         <p>${article.user.username } · <fmt:formatDate value="${article.created}" pattern="yyyy-MM-dd HH:mm:ss"/> 点击量${article.hits }</p>
 	       <hr>
 	       ${article.content}
 	       <br>

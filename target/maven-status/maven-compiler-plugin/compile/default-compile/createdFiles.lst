@@ -1,13 +1,13 @@
-com\caoxianfei\cms\dao\ChannelMapper.class
 com\caoxianfei\cms\dao\UserMapper.class
 com\caoxianfei\cms\dao\ArticleMapper.class
 com\caoxianfei\cms\domain\Category.class
 com\caoxianfei\cms\dao\SlideMapper.class
-com\caoxianfei\cms\domain\Collect.class
 com\caoxianfei\cms\controller\MyController.class
 com\caoxianfei\cms\domain\Channel.class
-com\caoxianfei\cms\service\UserService.class
 com\caoxianfei\cms\service\impl\ArticleServiceImpl.class
+com\caoxianfei\cms\dao\ChannelMapper.class
+com\caoxianfei\cms\domain\Collect.class
+com\caoxianfei\cms\service\UserService.class
 com\caoxianfei\cms\domain\User.class
 com\caoxianfei\cms\domain\Gender.class
 com\caoxianfei\cms\domain\Slide.class

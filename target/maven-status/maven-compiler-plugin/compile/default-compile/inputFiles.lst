@@ -13,7 +13,6 @@ G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\controller\PassportContr
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\dao\ArticleMapper.java
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\service\SlideService.java
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\controller\MyController.java
-G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\kafka\KafkaConsumerListener.java
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\service\ChannelService.java
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\domain\Category.java
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\service\CommentsService.java
@@ -32,4 +31,5 @@ G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\domain\Channel.java
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\domain\Gender.java
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\service\impl\ChannelServiceImpl.java
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\util\AdminInterceptor.java
+G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\listener\kafkaConsumerListener.java
 G:\java\caoxianfei-cms\src\main\java\com\caoxianfei\cms\service\ArticleService.java

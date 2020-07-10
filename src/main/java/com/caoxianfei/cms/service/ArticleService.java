@@ -44,6 +44,13 @@ public interface ArticleService {
 	 *  
 	 */
 	PageInfo<Article> selectHot(Article article, Integer pageNum, Integer pageSize);
+
+	/**
+	 *	 功能: 
+	 *	@return :
+	 *  
+	 */
+	void sethits(String key, Article article);
 	
 	
 }

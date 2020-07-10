@@ -123,7 +123,7 @@ public class ProducerTest {
 			article.setContentType(0);
 
 			// 设置用户
-			article.setUserId(23);
+			article.setUserId(19);
 
 			// 设置是否删除
 			article.setDeleted(0);

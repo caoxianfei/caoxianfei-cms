@@ -51,7 +51,8 @@
 		class="org.springframework.kafka.listener.ContainerProperties">
 		<!-- 构造函数 就是 主题的参数值 -->
 		<constructor-arg value="test" />
-		<property name="messageListener" ref="kafkaConsumerListener" />
+	<property name="messageListener" ref="kafkaConsumerListener" /> 
+		
 	</bean>
 
 	<!-- 配置conusmerContainer监听对象 -->

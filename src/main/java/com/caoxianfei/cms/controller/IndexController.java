@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,9 +88,13 @@ public class IndexController {
 			} else {
 
 				// 从es中查询数据
+				Date date = new Date();
 				PageInfo<Article> page = articleService.selectFromES(pageNum, pageSize, key);
+				Date date2 = new Date();
+				
+				long  time = date2.getTime() - date.getTime();
 				model.addAttribute("info", page);
-
+				model.addAttribute("time", time);
 				model.addAttribute("key", key);
 			}
 					
@@ -120,8 +125,15 @@ public class IndexController {
 	
 	
 	@RequestMapping("detail")
-	public String detail(Model model,Integer id) {
+	public String detail(Model model,Integer id,HttpServletRequest request) {
 		Article article = articleService.select(id);
+		String remoteAddr = request.getRemoteAddr();
+		
+		String key = "Hits_${" + article.getId() + "}_${" + remoteAddr + "}";
+		//建立一个新方法  讲  对象 以及  键值  传递到  service 实现  浏览数加1 的操作
+		articleService.sethits(key,article);
+		
+		
 		model.addAttribute("article", article);
 		PageInfo<Comments> info = commentsService.selectByIdList(id);
 		model.addAttribute("info", info);
