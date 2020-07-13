@@ -254,7 +254,7 @@
 									class="mr-3" alt="..." width="60" height="60">
 									<div class="media-body">
 										<p style="font-size: 14px">
-											<a href="/articleDetail?id=${lastArticle.id}"
+											<a href="/detail?id=${lastArticle.id}"
 												target="_blank">${lastArticle.title }</a>
 										</p>
 									</div></li>

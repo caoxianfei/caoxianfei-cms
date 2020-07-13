@@ -130,6 +130,7 @@ public class IndexController {
 		String remoteAddr = request.getRemoteAddr();
 		
 		String key = "Hits_${" + article.getId() + "}_${" + remoteAddr + "}";
+	
 		//建立一个新方法  讲  对象 以及  键值  传递到  service 实现  浏览数加1 的操作
 		articleService.sethits(key,article);
 		

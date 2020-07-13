@@ -4,6 +4,7 @@
 package com.caoxianfei.cms.service.impl;
 
 import java.text.SimpleDateFormat;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.caoxianfei.cms.dao.ArticleMapper;
@@ -46,9 +47,10 @@ public class ArticleServiceImpl implements ArticleService{
 	@Resource
 	private ElasticsearchTemplate elasticsearchTemplate;
 	
-	/*
-	 * @Resource private ThreadPoolTaskExecutor executor;
-	 */
+	
+	 @Autowired
+	 private ThreadPoolTaskExecutor executor;
+	 
 
 	public PageInfo<Article> selects(Article article, Integer pageNum, Integer pageSize) {
 		// TODO Auto-generated method stub
@@ -176,35 +178,80 @@ public class ArticleServiceImpl implements ArticleService{
 		return new PageInfo<Article>(page);
 	}
 
-	public void sethits(String key, Article article) {
-		//获取一个  redis String 类型的对象
-		ValueOperations<String, Article> opsForValue = redisTemplate.opsForValue();
-		//通过我们的键值 来获取一个  article 对象
-		 Article article2 = opsForValue.get(key);
-		//如果  对象为空的话  说明 我们还未点击过该对象
-		if(article2 == null ) {
-			//设置 键值过期为  5 分钟
-			opsForValue.set(key, null, Duration.ofMinutes(5));
-			//  进行 浏览量  加  1  的操作
-			article.setHits(article.getHits() + 1);
-		}
-			
+	public void sethits(String key, final Article article) {
 		
-//			executor.execute(new Runnable() {
-//				 
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					if(article2.getHits() <  1 ) {
-//						article2.setHits(0);
-//					}
-//					
-//					article2.setHits(article2.getHits() + 1);
-//					
-//					
-//				}
-//			});
-			//进行点击量修改后的一个 增加操作
-			articleMapper.update(article);
+//		为CMS系统文章最终页（详情页），每访问一次就同时往文章表的浏览量字段加1，如果一篇文章集中一时刻上百万次浏览，就会给数据库造成压力。现在请你利用Redis提高性能，
+//		当用户浏览文章时，将“Hits_${文章ID}_${用户IP地址}”为key，查询Redis里有没有该key，如果有key，则不做任何操作。如果没有，则使用Spring线程池异步执行数据库加1操作，
+//		并往Redis保存key为Hits_${文章ID}_${用户IP地址}，value为空值的记录，而且有效时长为5分钟。
+		
+//		(2)Redis判断（4分）。Redis写入（4分），设定有效时长（4分）
+		if(!redisTemplate.hasKey(key)) {
+		
+			//获取操作对象
+			ValueOperations<String, Article> opsForValue = redisTemplate.opsForValue();
+		
+			//存入值	有效时长为5分钟
+			opsForValue.set(key, null,Duration.ofMinutes(5));
+		
+//		(3)Spring线程池使用。（8分）
+			executor.execute(new Runnable() {
+				
+				public void run() {
+					
+//					(4)异步执行数据库加1操作。（4分）
+					
+					Integer hits = article.getHits();
+					
+					//处理空值
+					if(hits == null) {
+						hits = 0;
+					}
+					
+					//设置点击量
+					article.setHits(hits + 1);
+					
+					//将数据修改到数据库
+					articleMapper.update(article);
+				}
+			});
+		
+		
+		}
+		
+		
+		
+		
+//		//获取一个  redis String 类型的对象
+//		ValueOperations<String, Article> opsForValue = redisTemplate.opsForValue();
+//		//通过我们的键值 来获取一个  article 对象
+//		 Article article2 = opsForValue.get(key);
+//		//如果  对象为空的话  说明 我们还未点击过该对象
+//		if(article2 == null ) {
+//			//设置 键值过期为  5 分钟
+//			opsForValue.set(key, null, Duration.ofMinutes(5));
+//			//  进行 浏览量  加  1  的操作
+//			article.setHits(article.getHits() + 1);
+//		}
+//			
+//		
+////			executor.execute(new Runnable() {
+////				 
+////				public void run() {
+////					// TODO Auto-generated method stub
+////					if(article2.getHits() <  1 ) {
+////						article2.setHits(0);
+////					}
+////					
+////					article2.setHits(article2.getHits() + 1);
+////					
+////					
+////				}
+////			});
+//			//进行点击量修改后的一个 增加操作
+//			articleMapper.update(article);
+			
+			
+			
 			
 		}
 		

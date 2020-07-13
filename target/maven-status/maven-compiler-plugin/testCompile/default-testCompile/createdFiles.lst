@@ -1,0 +1,5 @@
+com\caoxianfei\cms\test\es\ESTest.class
+com\caoxianfei\cms\test\UserServiceTest.class
+com\caoxianfei\cms\test\testEs\test.class
+com\caoxianfei\cms\test\testkafka\test.class
+com\caoxianfei\cms\test\kafka\ProducerTest.class
